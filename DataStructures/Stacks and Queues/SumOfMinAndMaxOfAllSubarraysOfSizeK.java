@@ -1,7 +1,7 @@
 package ds.stacksAndQueues;
 
+import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Queue;
 
 public class SumOfMinAndMaxOfAllSubarraysOfSizeK {
 
@@ -15,46 +15,46 @@ public class SumOfMinAndMaxOfAllSubarraysOfSizeK {
     static int sumOfKsubArrays(int[] arr, int k){
         int ans=0;
 
-        Queue<Integer> min = new LinkedList<>();        //store only min elements of curr window
-        Queue<Integer> max = new LinkedList<>();        //store only max elements of curr window
+        Deque<Integer> min = new LinkedList<>();        //store only min elements of curr window
+        Deque<Integer> max = new LinkedList<>();        //store only max elements of curr window
 
         int i;
         //add min and max elements of first window to queues
         for(i=0; i<k; i++){
             //remove all elements bigger than curr element from rear of min queue
-            while(!min.isEmpty() && arr[min.peek()]>=arr[i])
-                min.poll();
-            min.add(i);         //add curr element to min queue
+            while(!min.isEmpty() && arr[min.peekLast()]>=arr[i])
+                min.removeLast();
+            min.addLast(i);         //add curr element to min queue
 
             //remove all elements bigger than curr element from rear of min queue
-            while(!max.isEmpty() && arr[max.peek()]<=arr[i])
-                max.poll();
-            max.add(i);         //add curr element to max queue
+            while(!max.isEmpty() && arr[max.peekLast()]<=arr[i])
+                max.removeLast();
+            max.addLast(i);         //add curr element to max queue
         }
 
         for(; i<arr.length; i++){
             //add min and max of prev window to ans
-            ans += arr[min.peek()]+arr[max.peek()];
+            ans += arr[min.peekFirst()]+arr[max.peekFirst()];
 
             //remove all elements from min and max queues that are not in current window
-            while(!min.isEmpty() && min.peek()<(i-k+1))
-                min.poll();
-            while(!max.isEmpty() && max.peek()<(i-k+1))
-                max.poll();
+            while(!min.isEmpty() && min.peekFirst()<(i-k+1))
+                min.removeFirst();
+            while(!max.isEmpty() && max.peekFirst()<(i-k+1))
+                max.removeFirst();
 
             //remove all elements bigger than curr element from rear of min queue
-            while(!min.isEmpty() && arr[min.peek()]>=arr[i])
-                min.poll();
-            min.add(i);             //add curr element to min queue
+            while(!min.isEmpty() && arr[min.peekLast()]>=arr[i])
+                min.removeLast();
+            min.addLast(i);             //add curr element to min queue
 
-            //remove all elements bigger than curr element from rear of min queue
-            while(!max.isEmpty() && arr[max.peek()]<=arr[i])
-                max.poll();
-            max.add(i);             //add curr element to max queue
+            //remove all elements smaller than curr element from rear of max queue
+            while(!max.isEmpty() && arr[max.peekLast()]<=arr[i])
+                max.removeLast();
+            max.addLast(i);             //add curr element to max queue
         }
 
         //add min and max of last window to ans
-        ans += arr[min.peek()]+arr[max.peek()];
+        ans += arr[min.peekLast()]+arr[max.peekLast()];
 
         return ans;
     }
