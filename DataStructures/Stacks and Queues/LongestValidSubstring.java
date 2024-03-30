@@ -1,4 +1,4 @@
-package ds.stacks;
+package ds.stacksAndQueues;
 
 import java.util.Stack;
 
