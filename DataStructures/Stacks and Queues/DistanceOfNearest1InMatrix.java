@@ -7,10 +7,12 @@ public class DistanceOfNearest1InMatrix {
     static class Ele {
         int x = 0;
         int y = 0;
-        Ele(int x, int y)
+        int dist=0;
+        Ele(int x, int y, int dist)
         {
             this.x = x;
             this.y = y;
+            this.dist = dist;
         }
     }
 
@@ -29,48 +31,38 @@ public class DistanceOfNearest1InMatrix {
     }
 
     static int[][] printDistance(int[][] grid, int n, int m){
-        Queue<Ele> q = new LinkedList<>();
-        //traverse grid to initialize all 0's to MAX and 1's to 0's and add them to queue
+        Queue<Ele> queue = new LinkedList<>();
+        boolean[][] visited = new boolean[n][m];
+        int[][] dist = new int[n][m];
+
+        //traverse grid to initialize add all 1's to queue and mark them as visited
         for(int i=0; i< grid.length; i++)
             for(int j=0; j<grid[i].length; j++)
                 if(grid[i][j]==1){
-                    grid[i][j] = 0;
-                    q.add(new Ele(i, j));
-                }else{
-                    grid[i][j] = Integer.MAX_VALUE;
+                    visited[i][j] = true;
+                    queue.add(new Ele(i, j, 0));            //initial nodes having 1's will have 0 distance
                 }
 
+        //adjacent rows and columns
+        int[] delRow = {-1, 0 , +1, 0};
+        int[] delCol = {0, +1, 0, -1};
+
         Ele temp;
-        while(!q.isEmpty()){
-            temp = q.poll();
+        while(!queue.isEmpty()){
+            temp = queue.poll();
+            dist[temp.x][temp.y] = temp.dist;               //set this node's distance in dist[][] array
 
-            int x1 = temp.x;
-            int y1 = temp.y;
+            for(int i=0; i<4; i++){
+                int nrow = temp.x+delRow[i];
+                int ncol = temp.y+delCol[i];
 
-            //check upper cell
-            if((x1-1>=0) && (grid[x1][y1] + 1 < grid[x1-1][y1])){
-                grid[x1-1][y1] = grid[temp.x][temp.y] + 1;
-                q.add(new Ele(x1-1, y1));
-            }
-
-            //check lower cell
-            if((x1+1<n) && (grid[x1][y1] + 1 < grid[x1+1][y1])){
-                grid[x1+1][y1] = grid[temp.x][temp.y] + 1;
-                q.add(new Ele(x1+1, y1));
-            }
-
-            //check left cell
-            if((y1-1>=0) && (grid[x1][y1] + 1 < grid[x1][y1-1])){
-                grid[x1][y1-1] = grid[temp.x][temp.y] + 1;
-                q.add(new Ele(x1, y1-1));
-            }
-
-            //check right cell
-            if((y1+1<m) && (grid[x1][y1] + 1 < grid[x1][y1+1])){
-                grid[x1][y1+1] = grid[temp.x][temp.y] + 1;
-                q.add(new Ele(x1, y1+1));
+                if(nrow>=0 && nrow<n && ncol>=0 && ncol<m
+                    && !visited[nrow][ncol]){
+                    visited[nrow][ncol] = true;
+                    queue.add(new Ele(nrow, ncol, temp.dist+1));
+                }
             }
         }
-        return grid;
+        return dist;
     }
 }
