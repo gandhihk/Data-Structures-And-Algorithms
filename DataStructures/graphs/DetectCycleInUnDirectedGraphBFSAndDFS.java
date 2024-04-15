@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class DetectCycleInGraphBFSAndDFS {
+public class DetectCycleInUnDirectedGraphBFSAndDFS {
     static class Ele{
         int node, parent;
         Ele(int n, int p){
